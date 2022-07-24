@@ -22,9 +22,9 @@ public class Member {
     @Column(name = "password")
     private String password;
 
-    // member에서 cart를 조회?
-    @OneToOne(mappedBy = "member", cascade = CascadeType.PERSIST)
-    private final Cart cart = new Cart(this);  // TODO: 해당 코드가 이쁜 코드가 맞는가?는 고민해봅시다.
+    // member에서 cart를 조회
+    @OneToOne(mappedBy = "member", cascade = CascadeType.ALL)  // 멤버가 저장될 때 Cart도 저장된다. 삭제되면 Cart도 삭제된다.
+    private final Cart memberCart = new Cart(this);  // TODO: 해당 코드가 이쁜 코드가 맞는가?는 고민해봅시다.
 
     @Builder
     public Member(String loginId, String password) {
