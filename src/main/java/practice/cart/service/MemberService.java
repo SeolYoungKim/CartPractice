@@ -23,4 +23,13 @@ public class MemberService {
 
         memberRepository.save(member);
     }
+
+    public void deleteMember(Long id) {
+
+        Member member = memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("없는 회원입니다."));
+
+        memberRepository.delete(member);
+
+    }
 }

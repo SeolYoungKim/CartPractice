@@ -11,6 +11,8 @@ import practice.cart.repository.CartRepository;
 import practice.cart.repository.ItemRepository;
 import practice.cart.repository.MemberRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -35,5 +37,17 @@ public class CartService {
 
         cartItemRepository.save(cartItem);
         cart.addCartItems(cartItem);
+    }
+
+    public void deleteItemInCart(Member member, Long itemId) {
+        Cart memberCart = member.getMemberCart();
+
+        // TODO: CartItemRepositoryCustom과 +Impl을 구현해서 ItemId로 CartItem을 찾는 로직을 짜도 된다. (QueryDSL)
+        CartItem findCartItem = memberCart.getCartItems().stream()
+                .filter(cartItem -> cartItem.getItem().getId().equals(itemId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("아이템이 없습니다."));
+
+        cartItemRepository.delete(findCartItem);
     }
 }

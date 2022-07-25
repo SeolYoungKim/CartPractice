@@ -29,4 +29,6 @@ public class CartItem {
         this.cart = cart;
         this.item = item;
     }
+
+    //TODO: 아이템 갯수 체크 로직 구현
 }
