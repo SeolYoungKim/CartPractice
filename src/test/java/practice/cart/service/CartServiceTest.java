@@ -1,5 +1,6 @@
 package practice.cart.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,6 +24,7 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+@Slf4j
 @SpringBootTest
 class CartServiceTest {
 
@@ -41,6 +43,12 @@ class CartServiceTest {
     @Autowired
     private CartService cartService;
 
+//    @BeforeEach
+//    void clear() {
+//        memberRepository.deleteAllInBatch();
+//        itemRepository.deleteAllInBatch();
+//        cartItemRepository.deleteAllInBatch();
+//    }
 
     @Transactional
     @DisplayName("개인 카트에 아이템을 저장한다.")
@@ -56,18 +64,14 @@ class CartServiceTest {
 
         itemRepository.saveAll(itemList);
 
-        List<Member> memberList = IntStream.range(1, 6)
-                .mapToObj(i -> Member.builder()
-                        .loginId("id" + i)
-                        .password("pw" + i)
-                        .build())
-                .collect(Collectors.toList());
+        Member member = Member.builder()
+                .loginId("aaa")
+                .password("bbb")
+                .build();
 
-        memberRepository.saveAll(memberList);
+        memberRepository.save(member);
 
         //when
-        Member member = memberList.get(0);
-
         cartService.addItemInCart(member, itemList.get(0));
         cartService.addItemInCart(member, itemList.get(1));
         cartService.addItemInCart(member, itemList.get(2));
@@ -77,9 +81,6 @@ class CartServiceTest {
         List<Item> items = memberCart.getItemList();
 
         //then
-        for (Item item : items) {
-            System.out.println("item.getItemName() = " + item.getItemName());
-        }
         assertThat(items.get(0).getItemName()).isEqualTo("아이템이름 1");
         assertThat(items.get(0).getItemPrice()).isEqualTo(1000);
     }
@@ -97,27 +98,22 @@ class CartServiceTest {
 
         itemRepository.saveAll(itemList);
 
-        List<Member> memberList = IntStream.range(1, 6)
-                .mapToObj(i -> Member.builder()
-                        .loginId("id" + i)
-                        .password("pw" + i)
-                        .build())
-                .collect(Collectors.toList());
+        Member member = Member.builder()
+                .loginId("aaa")
+                .password("bbb")
+                .build();
 
-        memberRepository.saveAll(memberList);
+        memberRepository.save(member);
 
         //when
-        Member member = memberList.get(0);
+        List<Item> items = itemRepository.findAll();
 
-        cartService.addItemInCart(member, itemList.get(0));
-        cartService.addItemInCart(member, itemList.get(1));
-        cartService.addItemInCart(member, itemList.get(2));
-        cartService.addItemInCart(member, itemList.get(3));
+        cartService.addItemInCart(member, items.get(0));
+        cartService.addItemInCart(member, items.get(1));
+        cartService.addItemInCart(member, items.get(2));
+        cartService.addItemInCart(member, items.get(3));
 
-        Cart memberCart = member.getMemberCart();
-        List<Item> items = memberCart.getItemList();
-
-        cartService.deleteItemInCart(member, 2L);
+        cartService.deleteItemInCart(member, items.get(2).getId());
 
         //then
         assertThat(cartItemRepository.findAll().size()).isEqualTo(3);

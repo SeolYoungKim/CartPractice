@@ -1,10 +1,13 @@
 package practice.cart.service;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import practice.cart.domain.Cart;
 import practice.cart.domain.Item;
 import practice.cart.domain.Member;
@@ -37,7 +40,13 @@ class MemberServiceTest {
     @Autowired
     private CartService cartService;
 
+    @BeforeEach
+    void clear() {
+        memberRepository.deleteAllInBatch();
+        itemRepository.deleteAllInBatch();
+    }
 
+    @Transactional // 아래의 테스트와 트랜잭션 환경을 분리해준다.
     @DisplayName("멤버가 저장되고, 카트가 자동추가 된다. 멤버에서 카트를 조회할 수 있다.")
     @Test
     void saveTest() {
@@ -49,7 +58,6 @@ class MemberServiceTest {
 
         //when
         memberRepository.save(member);
-
 
         //then
         assertThat(cartRepository.findAll().size()).isEqualTo(1);
@@ -68,32 +76,29 @@ class MemberServiceTest {
 
         itemRepository.saveAll(itemList);
 
-        List<Member> memberList = IntStream.range(1, 6)
-                .mapToObj(i -> Member.builder()
-                        .loginId("id" + i)
-                        .password("pw" + i)
-                        .build())
-                .collect(Collectors.toList());
+        Member member = Member.builder()
+                .loginId("id123")
+                .password("pw123")
+                .build();
 
-        memberRepository.saveAll(memberList);
+        memberRepository.save(member);
 
-        //when
-        Member member = memberList.get(0);
+//        when
+        List<Item> items = itemRepository.findAll();
 
-        cartService.addItemInCart(member, itemList.get(0));
-        cartService.addItemInCart(member, itemList.get(1));
-        cartService.addItemInCart(member, itemList.get(2));
-        cartService.addItemInCart(member, itemList.get(3));
-        cartService.addItemInCart(memberList.get(1), itemList.get(7));
+        cartService.addItemInCart(member, items.get(0));
+        cartService.addItemInCart(member, items.get(1));
+        cartService.addItemInCart(member, items.get(2));
+        cartService.addItemInCart(member, items.get(3));
 
         Cart memberCart = member.getMemberCart();
-        List<Item> items = memberCart.getItemList();
+        List<Item> itemLists = memberCart.getItemList();
 
         memberService.deleteMember(member.getId());
 
         //then
-        assertThat(items.get(0)).isNotNull();
-        assertThat(items.get(0).getItemName()).isEqualTo("아이템이름 1");
-        assertThat(items.get(0).getItemPrice()).isEqualTo(1000);
+        assertThat(itemLists.get(0)).isNotNull();
+        assertThat(itemLists.get(0).getItemName()).isEqualTo("아이템이름 1");
+        assertThat(itemLists.get(0).getItemPrice()).isEqualTo(1000);
     }
 }

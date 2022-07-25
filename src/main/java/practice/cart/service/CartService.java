@@ -2,6 +2,7 @@ package practice.cart.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import practice.cart.domain.Cart;
 import practice.cart.domain.CartItem;
 import practice.cart.domain.Item;
@@ -39,6 +40,7 @@ public class CartService {
         cart.addCartItems(cartItem);
     }
 
+    @Transactional
     public void deleteItemInCart(Member member, Long itemId) {
         Cart memberCart = member.getMemberCart();
 
@@ -48,6 +50,6 @@ public class CartService {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("아이템이 없습니다."));
 
-        cartItemRepository.delete(findCartItem);
+        cartItemRepository.delete(findCartItem);  // 왜 삭제가 안되지
     }
 }

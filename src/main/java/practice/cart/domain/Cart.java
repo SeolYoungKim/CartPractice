@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static javax.persistence.CascadeType.*;
+import static javax.persistence.FetchType.*;
 
 @Entity
 @Getter
@@ -25,7 +26,9 @@ public class Cart {
     @JoinColumn(name = "member_id", unique = true)
     private Member member;
 
-    @OneToMany(mappedBy = "cart", cascade = ALL) // Cart가 삭제될 때, cartItem도 삭제된다.
+    //TODO : cascade = ALL 덕분에 멤버를 지우면 모든게 지워지나, 이것 때문에 장바구니에서의 아이템 삭제가 되지 않는다..
+    // 이는 CartService에 @Transactional을 붙여주니까 해결됐는데, 솔직히 왜 해결됐는지 모르겠다.
+    @OneToMany(mappedBy = "cart", cascade = ALL, fetch = LAZY) // Cart가 삭제될 때, cartItem도 삭제된다.
     private final List<CartItem> cartItems = new ArrayList<>();
 
     public Cart(Member member) {
