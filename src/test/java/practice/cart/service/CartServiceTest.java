@@ -115,6 +115,8 @@ class CartServiceTest {
         cartService.addItemInCart(member, items.get(2));
         cartService.addItemInCart(member, items.get(3));
 
+        // --- 여기까지 DB에 저장이 된 상태 --- (오토커밋)
+
         cartService.deleteItemInCart(member, items.get(2).getId());
 
         //then

@@ -40,7 +40,7 @@ public class CartService {
         cart.addCartItems(cartItem);
     }
 
-    @Transactional
+//    @Transactional  // TODO: 왜 오늘(7/26)은 갑자기 트랜잭셔널이 없어도 잘될까...........알다가도모르겠네......
     public void deleteItemInCart(Member member, Long itemId) {
         Cart memberCart = member.getMemberCart();
 
