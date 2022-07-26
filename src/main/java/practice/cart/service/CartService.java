@@ -50,6 +50,6 @@ public class CartService {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("아이템이 없습니다."));
 
-        cartItemRepository.delete(findCartItem);  // 왜 삭제가 안되지
+        cartItemRepository.delete(findCartItem);  // 왜 삭제가 안되지 -> @Transactional 추가하니까 삭제가 됨.. 이유는?
     }
 }

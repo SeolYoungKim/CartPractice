@@ -2,6 +2,7 @@ package practice.cart.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -43,7 +44,8 @@ class CartServiceTest {
     @Autowired
     private CartService cartService;
 
-//    @BeforeEach
+    // TODO : Test 코드를 독립적으로 짜는 데 완전히 실패했다. 이에 대한 해결 방안을 생각해보자.
+//    @AfterEach
 //    void clear() {
 //        memberRepository.deleteAllInBatch();
 //        itemRepository.deleteAllInBatch();
@@ -96,19 +98,19 @@ class CartServiceTest {
                         .build())
                 .collect(Collectors.toList());
 
-        itemRepository.saveAll(itemList);
+        itemRepository.saveAll(itemList);  // 쿼리 전송
 
         Member member = Member.builder()
                 .loginId("aaa")
                 .password("bbb")
                 .build();
 
-        memberRepository.save(member);
+        memberRepository.save(member);  // 쿼리 전송
 
         //when
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemRepository.findAll();  // 쿼리 전송
 
-        cartService.addItemInCart(member, items.get(0));
+        cartService.addItemInCart(member, items.get(0));  // 쿼리 전송
         cartService.addItemInCart(member, items.get(1));
         cartService.addItemInCart(member, items.get(2));
         cartService.addItemInCart(member, items.get(3));
@@ -117,6 +119,7 @@ class CartServiceTest {
 
         //then
         assertThat(cartItemRepository.findAll().size()).isEqualTo(3);
+//        assertThat(items.size()).isEqualTo(10);  // Test Code 독립적으로 구성하기 실패
     }
 
 
