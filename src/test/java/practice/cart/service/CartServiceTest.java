@@ -45,12 +45,6 @@ class CartServiceTest {
     private CartService cartService;
 
     // TODO : Test 코드를 독립적으로 짜는 데 완전히 실패했다. 이에 대한 해결 방안을 생각해보자.
-//    @AfterEach
-//    void clear() {
-//        memberRepository.deleteAllInBatch();
-//        itemRepository.deleteAllInBatch();
-//        cartItemRepository.deleteAllInBatch();
-//    }
 
     @Transactional
     @DisplayName("개인 카트에 아이템을 저장한다.")
