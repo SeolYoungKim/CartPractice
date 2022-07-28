@@ -15,4 +15,16 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
 logging:
   level:
-    org.springframework.transaction.interceptor: TRACE
+    org:
+      springframework:
+        transaction:
+          interceptor: TRACE
+        jdbc:
+          datasource:
+            DataSourceTransactionManager: DEBUG
+        orm:
+          jpa:
+            JpaTransactionManager: DEBUG
+      hibernate:
+        resource:
+          transaction: DEBUG
